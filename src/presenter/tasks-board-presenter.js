@@ -49,6 +49,8 @@ export default class TasksBoardPresenter {
       return map;
     }, {});
 
+    let countBasket = 0;
+
     for (const status in StatusLabel) {
       const listComponent = new TasksListComponent({
         status,
@@ -67,8 +69,11 @@ export default class TasksBoardPresenter {
             this.#renderTask(task, listComponent.getTaskListElement())
           );
       }
+      if (status === "basket")
+        countBasket = tasksForStatus.length;
     }
-
+    
+    
     const resetButtonComponent = new ResetButtonComponent();
     render(
       resetButtonComponent,
@@ -77,6 +82,7 @@ export default class TasksBoardPresenter {
     resetButtonComponent.element.addEventListener("click", () => {
       this.#tasksModel.clearBasket();
     });
+    resetButtonComponent.element.disabled = countBasket === 0 ? true : false;
   }
 
   async #handleTaskDrop(taskId, newStatus) {
